@@ -1,55 +1,53 @@
 import streamlit as st
-import os
-from openai import OpenAI
+import pandas as pd
 
-# APIキー
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-PASSWORD = os.getenv("APP_PASSWORD", "demo123")
-
-st.set_page_config(page_title="AI要約デモ", page_icon="🔄", layout="centered")
-
-# タイトル
-st.markdown(
-    """
-    <h1 style="text-align:center; color:#2F4F4F; font-family:Arial, sans-serif;">
-        🔄 AI要約ツール
-    </h1>
-    <p style="text-align:center; color:#555; font-size:16px;">
-        文章を入力すると <b>アリスが『不思議の国のアリス』に置き換えて要約</b> してくれます。
-    </p>
-    """,
-    unsafe_allow_html=True
+# --- ページ設定 ---
+st.set_page_config(
+    page_title="ロト6 当選傾向デモ",
+    page_icon="🎲",
+    layout="centered"
 )
 
-# 認証
-if "authenticated" not in st.session_state:
-    st.session_state.authenticated = False
+st.title("🎲 ロト6 当選傾向スコア デモ")
+st.write("""
+このアプリは過去のロト6当選番号をもとに、入力した数字の出現傾向スコアを計算します。  
+⚠️ 実際の当選確率ではありません。遊び・デモ用です。
+""")
 
-if not st.session_state.authenticated:
-    pwd = st.text_input("パスワードを入力してください", type="password", max_chars=20)
-    if st.button("ログイン"):
-        if pwd == PASSWORD:
-            st.session_state.authenticated = True
-            st.success("ログイン成功！")
-        else:
-            st.error("パスワードが違います")
-else:
-    st.markdown("### 入力テキスト")
-    text = st.text_area("", placeholder="ここに文章を入力してください...", height=200)
+# --- 過去データ読み込み ---
+@st.cache_data
+def load_data():
+    # CSV例: 回,番号1,番号2,番号3,番号4,番号5,番号6,ボーナス
+    # githubやローカルに置いたCSVのパスに置き換えてください
+    return pd.read_csv("loto6_past.csv")
 
-    # 要約ボタン
-    if st.button("要約する"):
-        if text.strip():
-            with st.spinner("アリスが要約中..."):
-                response = client.chat.completions.create(
-                    model="gpt-4o-mini",
-                    messages=[
-                        {"role": "system", "content": "あなたは『不思議の国のアリス』のに登場するアリスです。また、優秀な要約アシスタントです。登場人物や世界観のイメージで文章を表現してください。"},
-                        {"role": "user", "content": f"次の文章を『不思議の国のアリス』の世界観で、必ず日本語で要約してください:\n\n{text}"}
-                    ]
-                )
-                summary = response.choices[0].message.content
-                st.markdown("### 要約結果")
-                st.info(summary)
+df = load_data()
+
+# --- 入力 ---
+numbers = st.text_input("6つの数字をカンマ区切りで入力 (例: 1,5,12,23,34,42)")
+
+# --- スコア計算 ---
+if st.button("スコア計算"):
+    try:
+        nums = [int(x.strip()) for x in numbers.split(",")]
+        if len(nums) != 6:
+            st.error("6つの数字を入力してください")
         else:
-            st.warning("文章を入力してください。")
+            # 過去の出現回数
+            count = sum(df[[f'番号{i}' for i in range(1,7)]].isin(nums).sum())
+            total_draws = df.shape[0] * 6  # 6個の番号×回数
+            score = count / total_draws  # 過去の出現傾向スコア
+
+            # 偶数・奇数比率
+            even_count = sum(1 for n in nums if n % 2 == 0)
+            odd_count = 6 - even_count
+
+            # 連番の有無
+            sorted_nums = sorted(nums)
+            consecutive = any(sorted_nums[i+1] - sorted_nums[i] == 1 for i in range(5))
+
+            # 結果表示
+            st.success(f"🔹 過去出現傾向スコア: {score:.2%}")
+            st.info(f"🔹 偶数: {even_count}, 奇数: {odd_count}, 連番あり: {'はい' if consecutive else 'いいえ'}")
+    except:
+        st.error("数字の形式が正しくありません")
