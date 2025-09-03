@@ -34,7 +34,7 @@ input[type="text"] {
 </style>
 """, unsafe_allow_html=True)
 
-st.title("🎲 ロト6 AI傾向スコアデモ（完全UI版）")
+st.title("🎲 ロト6 AI傾向スコアデモ")
 st.write("過去のロト6当選番号をもとに、入力した数字の傾向スコアを計算し、候補数字を提案します。")
 
 # --- CSV読み込み ---
@@ -70,14 +70,11 @@ def train_model(X, y):
     return model
 model = train_model(X, y)
 
-# --- 入力カード ---
-st.markdown('<div class="card">', unsafe_allow_html=True)
+# --- 入力 ---
 numbers_input = st.text_input("6つの数字をカンマ区切りで入力 (例: 1,5,12,23,34,42)")
-calculate_btn = st.button("スコア計算")
-st.markdown('</div>', unsafe_allow_html=True)
 
 # --- 計算 ---
-if calculate_btn:
+if st.button("スコア計算"):
     try:
         nums = [int(x.strip()) for x in numbers_input.split(",")]
         if len(nums) != 6:
@@ -91,7 +88,7 @@ if calculate_btn:
             # スコアカード
             st.markdown(
                 f"""
-                <div class="card" style="background-color:#f0f8ff;">
+                <div class="card">
                     <h3>入力数字の傾向スコア</h3>
                     <p style="font-size:28px; font-weight:bold; color:#ff4500;">{percent_score:.2f}%</p>
                 </div>
@@ -103,7 +100,7 @@ if calculate_btn:
             candidate_numbers = np.random.choice(probs.index, size=6, replace=False, p=probs.values)
             st.markdown(
                 f"""
-                <div class="card" style="background-color:#e6ffe6;">
+                <div class="card">
                     <h3>傾向上位候補番号</h3>
                     <p style="font-size:22px; font-weight:bold;">{sorted(candidate_numbers)}</p>
                 </div>
