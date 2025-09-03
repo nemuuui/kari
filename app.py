@@ -8,23 +8,15 @@ PASSWORD = os.getenv("APP_PASSWORD", "demo123")
 
 st.set_page_config(page_title="AI要約デモ", page_icon="📝", layout="centered")
 
-# CSSで背景・カード・余白を調整
+# CSS：カード風
 st.markdown("""
 <style>
-body {
-    background-color: #f5f5f5;
-}
-.block-container {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-    padding-left: 5%;
-    padding-right: 5%;
-}
 .card {
     background-color: white;
     padding: 20px;
     border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin-top: 20px;
     margin-bottom: 20px;
 }
 div.stButton > button:first-child {
@@ -63,13 +55,9 @@ if not st.session_state.authenticated:
         else:
             st.error("パスワードが違います")
 else:
-    # 入力カード
-    st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.markdown("### ✍️ 入力テキスト")
-    text = st.text_area("", placeholder="ここに文章をペーストしてください...", height=200)
-    st.markdown('</div>', unsafe_allow_html=True)
+    # 入力は普通のテキストエリア
+    text = st.text_area("✍️ 入力テキスト", placeholder="ここに文章を入力してください...", height=200)
 
-    # 要約ボタン
     if st.button("🚀 要約する"):
         if text.strip():
             with st.spinner("AIが要約中..."):
