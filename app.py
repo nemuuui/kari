@@ -15,7 +15,7 @@ st.markdown(
         🔄 AI要約ツール
     </h1>
     <p style="text-align:center; color:#555; font-size:16px;">
-        文章を入力すると <b>AIがVALORANTに置き換えて要約</b> してくれます。
+        文章を入力すると <b>AIが『不思議の国のアリス』に置き換えて要約</b> してくれます。
     </p>
     """,
     unsafe_allow_html=True
@@ -44,8 +44,8 @@ else:
                 response = client.chat.completions.create(
                     model="gpt-4o-mini",
                     messages=[
-                        {"role": "system", "content": "あなたはVALORANTの世界観を使った優秀な要約アシスタントです。試合やエージェントのイメージで文章を表現してください。"},
-                        {"role": "user", "content": f"次の文章をVALORANTの世界観で、必ず日本語で要約してください:\n\n{text}"}
+                        {"role": "system", "content": "あなたは『不思議の国のアリス』の世界観を使った優秀な要約アシスタントです。登場人物や世界観のイメージで文章を表現してください。"},
+                        {"role": "user", "content": f"次の文章を『不思議の国のアリス』の世界観で、必ず日本語で要約してください:\n\n{text}"}
                     ]
                 )
                 summary = response.choices[0].message.content
