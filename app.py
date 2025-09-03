@@ -19,7 +19,7 @@ st.write("""
 def load_data():
     # CSV例: 回,番号1,番号2,番号3,番号4,番号5,番号6,ボーナス
     # githubやローカルに置いたCSVのパスに置き換えてください
-    return pd.read_csv("lotto6_past.csv")
+    return pd.read_csv("loto6_past.csv")
 
 df = load_data()
 
