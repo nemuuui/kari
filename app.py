@@ -15,7 +15,7 @@ st.markdown(
         🔄 AI要約ツール
     </h1>
     <p style="text-align:center; color:#555; font-size:16px;">
-        文章を入力すると <b>AIが日本語で要約</b> してくれます。
+        文章を入力すると <b>AIがVALORANTに置き換えて要約</b> してくれます。
     </p>
     """,
     unsafe_allow_html=True
@@ -44,8 +44,8 @@ else:
                 response = client.chat.completions.create(
                     model="gpt-4o-mini",
                     messages=[
-                        {"role": "system", "content": "あなたは優秀な要約アシスタントです。"},
-                        {"role": "user", "content": f"次の文章を必ず日本語で短く要約してください:\n\n{text}"}
+                        {"role": "system", "content": "あなたはVALORANTの世界観を使った優秀な要約アシスタントです。試合やエージェントのイメージで文章を表現してください。"},
+                        {"role": "user", "content": f"次の文章をVALORANTの世界観で、必ず日本語で要約してください:\n\n{text}"}
                     ]
                 )
                 summary = response.choices[0].message.content
