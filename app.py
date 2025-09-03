@@ -62,7 +62,7 @@ if st.button("スコア計算"):
         else:
             # AIモデルで傾向スコア
             score = model.predict([numbers_to_features(nums)])[0]
-            st.success(f"入力数字の傾向スコア（過去出現回数合計ベース）: {score:.2f}")
+            st.success(f"入力数字の傾向スコア（過去出現回数合計ベース）: {score:.2%}")
 
             # 候補数字提案（過去出現傾向からランダム抽出）
             probs = number_counts / number_counts.sum()
