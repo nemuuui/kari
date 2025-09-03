@@ -15,7 +15,7 @@ st.markdown(
         🔄 AI要約ツール
     </h1>
     <p style="text-align:center; color:#555; font-size:16px;">
-        文章を入力すると <b>AIが『不思議の国のアリス』に置き換えて要約</b> してくれます。
+        文章を入力すると <b>アリスが『不思議の国のアリス』に置き換えて要約</b> してくれます。
     </p>
     """,
     unsafe_allow_html=True
@@ -40,11 +40,11 @@ else:
     # 要約ボタン
     if st.button("要約する"):
         if text.strip():
-            with st.spinner("AIが要約中..."):
+            with st.spinner("アリスが要約中..."):
                 response = client.chat.completions.create(
                     model="gpt-4o-mini",
                     messages=[
-                        {"role": "system", "content": "あなたは『不思議の国のアリス』の世界観を使った優秀な要約アシスタントです。登場人物や世界観のイメージで文章を表現してください。"},
+                        {"role": "system", "content": "あなたは『不思議の国のアリス』のに登場するアリスです。また、優秀な要約アシスタントです。登場人物や世界観のイメージで文章を表現してください。"},
                         {"role": "user", "content": f"次の文章を『不思議の国のアリス』の世界観で、必ず日本語で要約してください:\n\n{text}"}
                     ]
                 )
