@@ -60,13 +60,47 @@ if st.button("スコア計算"):
         if len(nums) != 6:
             st.error("6つの数字を入力してください")
         else:
-            # AIモデルで傾向スコア
-            score = model.predict([numbers_to_features(nums)])[0]
-            st.success(f"入力数字の傾向スコア（過去出現回数合計ベース）: {score:.2%}")
+# AIモデルでスコア予測
+            raw_score = model.predict([numbers_to_features(nums)])[0]
+            
+            # %表示に変換（過去最大スコアで正規化）
+            max_score = max(y)
+            percent_score = (raw_score / max_score) * 100
+            
+            # カード風UIで表示
+            st.markdown(
+                f"""
+                <div style="
+                    background-color:#f0f8ff; 
+                    padding:20px; 
+                    border-radius:15px; 
+                    box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+                    text-align:center;
+                ">
+                    <h3>入力数字の傾向スコア</h3>
+                    <p style="font-size:24px; font-weight:bold; color:#ff4500;">{percent_score:.2f}%</p>
+                </div>
+                """, unsafe_allow_html=True
+            )
 
-            # 候補数字提案（過去出現傾向からランダム抽出）
+            # 候補数字提案（過去出現回数ベース）
             probs = number_counts / number_counts.sum()
             candidate_numbers = np.random.choice(probs.index, size=6, replace=False, p=probs.values)
-            st.info(f"傾向上位候補番号: {sorted(candidate_numbers)}")
+
+            # カード風UIで候補表示
+            st.markdown(
+                f"""
+                <div style="
+                    background-color:#e6ffe6; 
+                    padding:20px; 
+                    border-radius:15px; 
+                    box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+                    text-align:center;
+                ">
+                    <h3>傾向上位候補番号</h3>
+                    <p style="font-size:20px; font-weight:bold;">{sorted(candidate_numbers)}</p>
+                </div>
+                """, unsafe_allow_html=True
+            )
     except:
         st.error("数字の形式が正しくありません")
