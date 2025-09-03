@@ -2,16 +2,15 @@ import streamlit as st
 import os
 from openai import OpenAI
 
-# APIキー
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 PASSWORD = os.getenv("APP_PASSWORD", "demo123")
 
 st.set_page_config(page_title="AI要約デモ", page_icon="📝", layout="centered")
 
-# CSS：カード風
+# CSSでカード風スタイル
 st.markdown("""
 <style>
-.card {
+.result-card {
     background-color: white;
     padding: 20px;
     border-radius: 12px;
@@ -29,25 +28,15 @@ div.stButton > button:first-child {
 </style>
 """, unsafe_allow_html=True)
 
-# タイトル
-st.markdown(
-    """
-    <h1 style="text-align:center; color:#2F4F4F; font-family:Arial, sans-serif;">
-        📝 AI要約ツール
-    </h1>
-    <p style="text-align:center; color:#555; font-size:16px;">
-        文章を入力すると <b>AIが日本語で要約</b> してくれます。
-    </p>
-    """,
-    unsafe_allow_html=True
-)
+st.markdown("<h1 style='text-align:center; color:#2F4F4F;'>📝 AI要約ツール</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:center; color:#555;'>文章を入力すると <b>AIが日本語で要約</b> してくれます。</p>", unsafe_allow_html=True)
 
 # 認証
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
 if not st.session_state.authenticated:
-    pwd = st.text_input("パスワードを入力してください", type="password", max_chars=20)
+    pwd = st.text_input("パスワードを入力してください", type="password")
     if st.button("ログイン"):
         if pwd == PASSWORD:
             st.session_state.authenticated = True
@@ -55,7 +44,7 @@ if not st.session_state.authenticated:
         else:
             st.error("パスワードが違います")
 else:
-    # 入力は普通のテキストエリア
+    # 入力欄
     text = st.text_area("✍️ 入力テキスト", placeholder="ここに文章を入力してください...", height=200)
 
     if st.button("🚀 要約する"):
@@ -70,10 +59,9 @@ else:
                 )
                 summary = response.choices[0].message.content
 
-                # 結果カード
-                st.markdown('<div class="card">', unsafe_allow_html=True)
-                st.markdown("### ✨ 要約結果")
-                st.info(summary)
+                # カード風背景 + 中身は st.write で表示
+                st.markdown('<div class="result-card">', unsafe_allow_html=True)
+                st.write(summary)
                 st.markdown('</div>', unsafe_allow_html=True)
         else:
             st.warning("文章を入力してください。")
