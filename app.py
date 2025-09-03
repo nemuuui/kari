@@ -73,6 +73,21 @@ model = train_model(X, y)
 # --- 入力 ---
 numbers_input = st.text_input("6つの数字をカンマ区切りで入力 (例: 1,5,12,23,34,42)")
 
+# --- 丸数字表示関数 ---
+def show_numbers_as_circles(numbers, counts=None):
+    html_numbers = ""
+    for n in sorted(numbers):
+        color = "#4CAF50"  # デフォルト緑
+        if counts is not None:
+            # 出現回数に応じて色グラデーション（赤→緑）
+            ratio = counts[n] / counts.max()
+            r = int(255 * (1 - ratio))
+            g = int(255 * ratio)
+            b = 0
+            color = f'rgb({r},{g},{b})'
+        html_numbers += f'<span class="num-circle" style="background-color:{color}">{n}</span>'
+    st.markdown(f'<div style="text-align:center;">{html_numbers}</div>', unsafe_allow_html=True)
+
 # --- 計算 ---
 if st.button("スコア計算"):
     try:
@@ -95,15 +110,14 @@ if st.button("スコア計算"):
                 """, unsafe_allow_html=True
             )
 
-            # 候補数字カード
+            # 候補数字生成（過去出現回数ベース）
             probs = number_counts / number_counts.sum()
             candidate_numbers = np.random.choice(probs.index, size=6, replace=False, p=probs.values)
-            st.markdown(
-                f"""
-                <div class="card">
-                    <h3>傾向上位候補番号</h3>
-                    <p style="font-size:22px; font-weight:bold;">{sorted(candidate_numbers)}</p>
-                </div>
-                """, unsafe_allow_html=True)
+
+            # 候補数字カード（丸数字・色付き）
+            st.markdown('<div class="card">', unsafe_allow_html=True)
+            st.markdown('<h3>傾向上位候補番号</h3>', unsafe_allow_html=True)
+            show_numbers_as_circles(candidate_numbers, counts=number_counts)
+            st.markdown('</div>', unsafe_allow_html=True)
     except:
         st.error("数字の形式が正しくありません")
