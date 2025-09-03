@@ -40,7 +40,7 @@ st.write("過去のロト6当選番号をもとに、入力した数字の傾向
 # --- CSV読み込み ---
 @st.cache_data
 def load_data():
-    return pd.read_csv("lotto6_past.csv")
+    return pd.read_csv("loto6_past.csv")
 df = load_data()
 
 # --- 過去出現回数 ---
