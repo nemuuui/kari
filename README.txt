@@ -1,7 +1,12 @@
-# ロト6 当選傾向AIデモ
+# AI要約ツール（Streamlit + OpenAI）
 
-このアプリは、過去のロト6当選番号をもとに、入力した数字の過去出現傾向スコアを計算するデモアプリです。
+## 概要
+文章を入力するとAIが短く要約してくれるWebアプリです。  
+パスワードを知っている人だけが利用できます。
 
 ## 使い方
-1. `app.py` と `lotto6_past.csv` を同じディレクトリに置く
-2. 必要ライブラリをインストール
+1. このリポジトリを [Streamlit Community Cloud](https://streamlit.io/cloud) にデプロイ
+2. Secretsに以下を設定  
+   - `OPENAI_API_KEY=sk-xxxx`  
+   - `APP_PASSWORD=任意のパスワード`  
+3. 発行されたURLを仲間に共有してください
